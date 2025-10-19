@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  supabase-security-suite:
+    build: .
+    container_name: supabase-security-dashboard
+    ports:
+      - "8080:8080"
+    environment:
+      - DASHBOARD_HOST=0.0.0.0
+      - DASHBOARD_PORT=8080
+      # Optional: Configure AI providers
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # Optional: Database connection
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+    volumes:
+      # Mount your project for scanning
+      - ./your-project:/app/target:ro
+      # Persist scan results
+      - ./reports:/app/reports
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Run one-time scan
+  scanner:
+    build: .
+    container_name: supabase-scanner
+    command: suite scan /app/target --config /app/config.json --output /app/reports/report.json
+    environment:
+      - SUPABASE_DB_URL=${SUPABASE_DB_URL}
+    volumes:
+      - ./your-project:/app/target:ro
+      - ./config.json:/app/config.json:ro
+      - ./reports:/app/reports
+    profiles:
+      - scan
+
