@@ -118,12 +118,7 @@ Supabase Security Suite is a production-ready security scanner designed specific
 
 ### Installation
 
-#### **Option 1: pip (Recommended)**
-```bash
-pip install supabase-security-suite
-```
-
-#### **Option 2: From Source**
+#### **From Source**
 ```bash
 git clone https://github.com/yourusername/supabase-security-suite.git
 cd supabase-security-suite
