@@ -102,6 +102,26 @@ def create_app(reports_dir=None):
         
         return jsonify(sorted(reports, key=lambda x: x['timestamp'], reverse=True))
     
+    @app.route('/api/reports/latest')
+    def get_latest_report():
+        """Get the latest report data"""
+        if not REPORTS_DIR.exists():
+            return jsonify({"error": "No reports directory found"}), 404
+        
+        # Find the most recent report.json file
+        report_files = list(REPORTS_DIR.glob("report*.json"))
+        if not report_files:
+            return jsonify({"error": "No reports found"}), 404
+        
+        latest_report = max(report_files, key=lambda f: f.stat().st_mtime)
+        
+        try:
+            with open(latest_report) as f:
+                data = json.load(f)
+            return jsonify(data)
+        except Exception as e:
+            return jsonify({"error": f"Error reading report: {str(e)}"}), 500
+    
     @app.route('/api/report/<filename>')
     def get_report(filename):
         """Get specific report details"""
