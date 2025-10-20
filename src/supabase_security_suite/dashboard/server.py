@@ -182,25 +182,28 @@ def create_app(reports_dir=None):
             try:
                 import subprocess
                 
-                cmd = [
-                    "python3", "final.py",
-                    "--path", params.get("path", "/path/to/supabase/project"),
-                    "--out", str(REPORTS_DIR),
-                    "--fancy"
-                ]
+                # Use the new scan.py script or suite CLI command
+                scan_script = Path.cwd() / "scan.py"
+                target_path = params.get("path", str(Path.cwd()))
                 
-                if params.get("supabase_url"):
-                    cmd.extend(["--supabase-url", params["supabase_url"]])
-                if params.get("db_url"):
-                    cmd.extend(["--db-url", params["db_url"]])
-                if params.get("allow_external"):
-                    cmd.append("--allow-external")
-                if params.get("openai_api_key"):
-                    cmd.extend(["--openai-api-key", params["openai_api_key"]])
-                if params.get("volume_scan"):
-                    cmd.append("--volume-scan")
-                if params.get("dashboard_auth"):
-                    cmd.append("--dashboard-auth")
+                if scan_script.exists():
+                    # Use scan.py if available
+                    cmd = [
+                        "python3", str(scan_script),
+                        target_path
+                    ]
+                else:
+                    # Fallback to suite CLI command
+                    cmd = [
+                        "suite", "scan",
+                        target_path,
+                        "--output", str(REPORTS_DIR / "report.json")
+                    ]
+                    
+                    # Add config if provided
+                    config_file = Path.cwd() / "quick-config.json"
+                    if config_file.exists():
+                        cmd.extend(["--config", str(config_file)])
                 
                 SCAN_STATUS['message'] = "Running scan..."
                 SCAN_STATUS['progress'] = 30

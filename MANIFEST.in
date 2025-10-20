@@ -1,0 +1,25 @@
+# Include documentation and configuration files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include ARCHITECTURE.md
+include requirements.txt
+include pyproject.toml
+include setup.py
+
+# Include example configuration
+include config.example.json
+
+# Include dashboard templates and static files
+recursive-include src/supabase_security_suite/dashboard/templates *.html
+recursive-include src/supabase_security_suite/dashboard/static *
+
+# Include any other data files
+recursive-include src/supabase_security_suite *.yaml *.yml *.json
+
+# Exclude compiled Python files
+global-exclude *.py[cod]
+global-exclude __pycache__
+global-exclude *.so
+global-exclude .DS_Store
+
