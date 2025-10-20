@@ -791,6 +791,25 @@
                     </div>
                 </div>
 
+                <!-- Scan Path Configuration -->
+                <div style="margin-top: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">
+                        📂 Scan Target Path
+                    </label>
+                    <input 
+                        type="text" 
+                        x-model="scanConfig.path" 
+                        class="form-input" 
+                        placeholder="/path/to/project or . for current directory"
+                        style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;"
+                        :disabled="scanStatus.running"
+                    >
+                    <small style="display: block; margin-top: 6px; color: #6b7280;">
+                        Current: <code x-text="scanConfig.path" style="background: #e5e7eb; padding: 2px 6px; border-radius: 3px;"></code>
+                        <span style="margin-left: 10px;">Tip: Use <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 3px;">.</code> to scan the dashboard's directory</span>
+                    </small>
+                </div>
+
                 <div style="margin-top: 20px; display: flex; gap: 10px;">
                     <button class="btn" @click="startScan()" :disabled="scanStatus.running">
                         <span x-show="!scanStatus.running">🚀 Start Scan</span>
@@ -989,7 +1008,7 @@
                 
                 // Configuration objects
                 scanConfig: {
-                    path: '/path/to/supabase/project',
+                    path: '.',  // Scan current directory
                     supabase_url: 'http://localhost:54321',
                     db_url: 'postgresql://postgres:postgres@localhost:54322/postgres',
                     allow_external: true,
